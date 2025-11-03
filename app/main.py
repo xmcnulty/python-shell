@@ -1,44 +1,30 @@
 import sys
-from typing import Optional
+from commands import command_registry
 
-def echo(args: Optional[str]):
-    if args:
-        print(args.lstrip())
-
-def type_cmd(args: Optional[str]):
-    if args:
-        if args in commands.keys():
-            print(f"{args} is a shell builtin")
-        else:
-            print(f"{args}: not found")
-
-commands = {
-    "exit" : None, 
-    "echo" : echo, 
-    "type" : type_cmd
-}
+command_registry["exit"] = None
 
 def main():
     while True:
         sys.stdout.write("$ ")
+        sys.stdout.flush()
         
-        command = input()
-        
-        if not command:
-            print("please enter a command")
+        cmdline = input().strip()
+        if not cmdline:
             continue
 
-        elements = command.split(maxsplit=1)
-        cmd = elements[0]
-        args = elements[1] if len(elements) == 2 else None
+        parts = cmdline.split(maxsplit=1)
+        cmd = parts[0]
+        args = parts[1] if len(parts) == 2 else None
 
         if cmd == "exit":
             return int(args) if args and args.isnumeric() else 0
 
-        if cmd in commands.keys():
-            commands[cmd](args)
+        handler = command_registry.get(cmd)
+
+        if handler:
+            handler(args)
         else:
-            print(f"{command}: command not found")
+            print(f"{cmd}: command not found")
 
 
 if __name__ == "__main__":
