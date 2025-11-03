@@ -6,13 +6,24 @@ def process_args(input: str) -> List[str]:
     """
     args = []
     in_single_quote = False
+    in_double_quote = False
+
     current = ""
 
     for c in input:
-        if c == "'":
-            in_single_quote = not in_single_quote
-        elif c == " ":
+
+        if c == '"':
             if in_single_quote:
+                current += '"'
+            else:
+                in_double_quote = not in_double_quote
+        elif c == "'":
+            if in_double_quote:
+                current += "'"
+            else:
+                in_single_quote = not in_single_quote
+        elif c == " ":
+            if in_single_quote or in_double_quote:
                 current += " "
             elif current:
                 args.append(current)
