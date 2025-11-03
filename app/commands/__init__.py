@@ -6,4 +6,4 @@ def register_command(name):
         return func
     return decorator
 
-from . import echo, type
+from . import echo, type, pwd
