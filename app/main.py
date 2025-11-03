@@ -31,7 +31,7 @@ def main():
             # if it is, execute it and print output
             if exec_path:
                 result = subprocess.run(
-                    [exec_path] + args.split() if args else [exec_path],
+                    [cmd] + args.split() if args else [cmd],
                     capture_output=True,
                     text=True
                 )
