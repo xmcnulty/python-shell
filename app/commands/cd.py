@@ -1,11 +1,14 @@
-from typing import Optional
+from typing import Optional, List
 from . import register_command
 from pathlib import Path
 import os
 
 @register_command("cd")
-def cd(args: Optional[str]):
-    path = Path.home() if args and args == "~" else args
+def cd(args: Optional[List[str]]):
+    path = None
+
+    if args:
+        path = Path.home() if args[0] == "~" else args[0]
 
     if path:
         try:
