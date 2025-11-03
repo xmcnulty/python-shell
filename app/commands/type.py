@@ -1,6 +1,6 @@
 from typing import Optional
 from . import command_registry, register_command
-from ..utils.path_utils import find_executable
+from app.utils.path_utils import find_executable
 
 @register_command("type")
 def type(args: Optional[str]):

@@ -1,6 +1,6 @@
 import sys, subprocess
-from .commands import command_registry
-from .utils.path_utils import find_executable
+from app.commands import command_registry
+from app.utils.path_utils import find_executable
 
 command_registry["exit"] = None
 
