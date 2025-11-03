@@ -1,5 +1,5 @@
 import sys
-from commands import command_registry
+from .commands import command_registry
 
 command_registry["exit"] = None
 
