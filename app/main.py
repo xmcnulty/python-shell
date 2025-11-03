@@ -1,5 +1,6 @@
-import sys
+import sys, subprocess
 from .commands import command_registry
+from .utils.path_utils import find_executable
 
 command_registry["exit"] = None
 
@@ -24,7 +25,23 @@ def main():
         if handler:
             handler(args)
         else:
-            print(f"{cmd}: command not found")
+            # check if command is an executable in PATH
+            exec_path = find_executable(cmd)
+
+            # if it is, execute it and print output
+            if exec_path:
+                result = subprocess.run(
+                    [exec_path] + args.split() if args else [exec_path],
+                    capture_output=True,
+                    text=True
+                )
+
+                if result.stdout:
+                    print(result.stdout)
+                if result.stderr:
+                    print(result.stderr)
+            else:
+                print(f"{cmd}: command not found")
 
 
 if __name__ == "__main__":

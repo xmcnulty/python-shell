@@ -1,6 +1,6 @@
 from typing import Optional
 from . import command_registry, register_command
-import os
+from ..utils.path_utils import find_executable
 
 @register_command("type")
 def type(args: Optional[str]):
@@ -8,11 +8,11 @@ def type(args: Optional[str]):
         if args in command_registry:
             print(f"{args} is a shell builtin")
         else:
-            for path_dir in os.getenv("PATH", "").split(os.pathsep):
-                candidate = os.path.join(path_dir, args)
+            path = find_executable(args)
 
-                if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
-                    print(f"{args} is {candidate}")
-                    return
+            if path:
+                print(f"{args} is {path}")
+            else:
+                print(f"{args}: not found")
                 
-            print(f"{args}: not found")
+            
