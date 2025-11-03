@@ -37,9 +37,9 @@ def main():
                 )
 
                 if result.stdout:
-                    print(result.stdout)
+                    print(result.stdout, end="")
                 if result.stderr:
-                    print(result.stderr)
+                    print(result.stderr, end="")
             else:
                 print(f"{cmd}: command not found")
 
