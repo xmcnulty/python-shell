@@ -1,5 +1,4 @@
 from typing import List
-from app.core.output_handler import OutputHandler
 from app.commands.command import Command
 from app.core.model.execution_result import ExecutionResult
 

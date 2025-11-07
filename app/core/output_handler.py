@@ -15,6 +15,11 @@ class OutputHandler:
 
     def write(self, output: str):
         if self._file:
+            if self._append == "a":
+                self._file.seek(0, 2)  # Move to end of file
+                if self._file.tell() > 0:
+                    self._file.write("\n")
+                    
             self._file.write(output)
             self._file.flush()
         else:

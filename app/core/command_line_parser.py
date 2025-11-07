@@ -50,6 +50,18 @@ class CommandLineParser:
                 
                 stderr = OutputConfig(file_path=args[i + 1], type=OutputType.WRITE)
                 i += 2
+            elif args[i] in {">>", "1>>"}:
+                if i + 1 >= len(args):
+                    raise Exception(f"stdout redirect missing target file")
+                
+                stdout = OutputConfig(file_path=args[i + 1], type=OutputType.APPEND)
+                i += 2
+            elif args[i] == "2>>":
+                if i + 1 >= len(args):
+                    raise Exception("stdout redirect missing target file")
+                
+                stderr = OutputConfig(file_path=args[i + 1], type=OutputType.APPEND)
+                i += 2
             else:
                 cleaned_args.append(args[i])
                 i += 1
