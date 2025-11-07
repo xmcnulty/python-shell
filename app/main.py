@@ -14,9 +14,9 @@ def main():
         if not cmdline:
             continue
 
-        parts = cmdline.split(maxsplit=1)
-        cmd = parts[0]
-        args = process_args(parts[1]) if len(parts) == 2 else None
+        parts = process_args(cmdline)
+        cmd = parts[0] if parts else ""
+        args = parts[1:] if len(parts) > 1 else None
 
         if cmd == "exit":
             return int(args[0]) if args and args[0].isnumeric() else 0
