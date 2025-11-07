@@ -15,9 +15,10 @@ class ExecutionHandler:
         """
         command_obj = self._factory.create(name=cmd.command)
 
-        out_handler = OutputHandler(cmd.context.stdout, False)
-
         try:
-            command_obj.execute(args=cmd.context.args, stdout=out_handler)
+            command_obj.execute(
+                args=cmd.args, 
+                stdout=OutputHandler(config=cmd.stdout)
+            )
         except InvalidCommandError as e:
             print(e)

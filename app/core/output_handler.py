@@ -1,24 +1,17 @@
 from typing import Optional
+from app.core.model.output_config import *
 
 class OutputHandler:
 
-    def __init__(self, path: Optional[str], append: bool) -> None:
-        self._path = path
-        self._append = append
-        self._file = None
+    _path = None
+    _append = None
+    _file = None
 
-        if path:
-            mode = "a" if append else "w"
-            self._file = open(path, mode, encoding='utf-8')
-
-
-    @property
-    def path(self) -> Optional[str]:
-        return self._path
-    
-    @property
-    def append(self) -> bool:
-        return self._append
+    def __init__(self, config: Optional[OutputConfig]) -> None:
+        if config:
+            self._path = config.file_path
+            self._append = config.type.value
+            self._file = open(self._path, self._append)
 
     def write(self, output: str):
         if self._file:

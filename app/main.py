@@ -31,34 +31,9 @@ def main():
             return
         
         if parsed_input.command == "exit":
-            return int(parsed_input.context.args[0]) if parsed_input.context.args else 0
+            return int(parsed_input.args[0]) if parsed_input.args else 0
         
         executor.execute_parsed_command(parsed_input)
-        
-        """
-        handler = command_registry.get(parsed_input.command)
-
-        if handler:
-            handler(parsed_input.args, parsed_input.output)
-        else:
-            # check if command is an executable in PATH
-            exec_path = find_executable(parsed_input.command)
-
-            # if it is, execute it and print output
-            if exec_path:
-                result = subprocess.run(
-                    [parsed_input.command] + parsed_input.args if parsed_input.args else [parsed_input.command],
-                    capture_output=True,
-                    text=True
-                )
-
-                if result.stdout:
-                    print(result.stdout, end="")
-                if result.stderr:
-                    print(result.stderr, end="")
-            else:
-                print(f"{parsed_input.command}: command not found")
-                """
 
 
 if __name__ == "__main__":
