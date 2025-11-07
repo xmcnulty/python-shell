@@ -1,5 +1,4 @@
 from typing import List, Optional, Tuple
-from app.core.error import InvalidRedirectError
 from app.core.model.parsed_command import ParsedCommand
 from app.core.model.output_config import *
 import shlex
@@ -41,13 +40,13 @@ class CommandLineParser:
         while i < len(args):
             if args[i] in {">", "1>"}:
                 if i + 1 >= len(args):
-                    raise InvalidRedirectError(f"stdout redirect missing target file")
+                    raise Exception(f"stdout redirect missing target file")
                 
                 stdout = OutputConfig(file_path=args[i + 1], type=OutputType.WRITE)
                 i += 2
             elif args[i] == "2>":
                 if i + 1 >= len(args):
-                    raise InvalidRedirectError("stdout redirect missing target file")
+                    raise Exception("stdout redirect missing target file")
                 
                 stderr = OutputConfig(file_path=args[i + 1], type=OutputType.WRITE)
                 i += 2

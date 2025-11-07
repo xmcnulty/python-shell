@@ -1,7 +1,6 @@
 from typing import List
 from app.commands.command import Command
-from app.core.output_handler import OutputHandler
-from app.core.error import InvalidCommandError
+from app.core.model.execution_result import ExecutionResult
 from typing import Optional
 import os
 import subprocess
@@ -21,7 +20,7 @@ class ExternalCmd(Command):
         
         return None
 
-    def execute(self, args: List[str], stdout: OutputHandler):
+    def execute(self, args: List[str]) -> ExecutionResult:
             # check if command is an executable in PATH
             exec_path = self.find_executable(self.cmd)
 
@@ -32,13 +31,14 @@ class ExternalCmd(Command):
                     capture_output=True,
                     text=True
                 )
-
+        
                 stdout_text = result.stdout.rstrip("\n") if result.stdout else ""
                 stderr_text = result.stderr.rstrip("\n") if result.stderr else ""
 
-                if result.stdout:
-                    stdout.write(stdout_text)
-                if result.stderr:
-                    print(stderr_text) #TODO: stderr implementation
+                return ExecutionResult(
+                     code=result.returncode,
+                     stdout=stdout_text,
+                     stderr=stderr_text
+                )
             else:
-                 raise InvalidCommandError(cmd_entered=self.cmd)
+                 return ExecutionResult(code=-1, stderr=f"{self.cmd}: command not found")
