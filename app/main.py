@@ -1,18 +1,10 @@
 import sys
 from app.core.command_line_parser import CommandLineParser
 from app.commands.command_factory import CommandFactory
-from app.commands.echo import Echo
-from app.commands.cd import CD
-from app.commands.type import Type
-from app.commands.pwd import PWD
 from app.core.execution_handler import ExecutionHandler
 
 def main():
-    factory = CommandFactory()
-    factory.register("echo", Echo)
-    factory.register("cd", CD)
-    factory.register("type", Type)
-    factory.register("pwd", PWD)
+    factory = CommandFactory().create_with_builtins()
 
     executor = ExecutionHandler(factory=factory)
     parser = CommandLineParser()

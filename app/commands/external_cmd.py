@@ -1,8 +1,7 @@
 from typing import List
 from app.commands.command import Command
 from app.core.model.execution_result import ExecutionResult
-from typing import Optional
-import os
+from app.utils.path_utils import find_executable_path
 import subprocess
 
 class ExternalCmd(Command):
@@ -10,19 +9,9 @@ class ExternalCmd(Command):
          self.cmd = cmd
          super().__init__()
 
-    @staticmethod
-    def find_executable(cmd: str) -> Optional[str]:
-        for path_dir in os.getenv("PATH", "").split(os.pathsep):
-            candidate = os.path.join(path_dir, cmd)
-
-            if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
-                return candidate
-        
-        return None
-
     def execute(self, args: List[str]) -> ExecutionResult:
             # check if command is an executable in PATH
-            exec_path = self.find_executable(self.cmd)
+            exec_path = find_executable_path(self.cmd)
 
             # if it is, execute it and print output
             if exec_path:
