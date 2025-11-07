@@ -31,7 +31,7 @@ class CommandFactory:
         Returns:
             Set[str]: Set of command names
         """
-        return set(self._registry.keys()) | {"exit"}
+        return set(self._registry.keys())
 
     def register(self, name: str, command_cls: Type[Command]):
         self._registry[name] = command_cls
@@ -81,7 +81,8 @@ class CommandFactory:
                 for name, obj in inspect.getmembers(module):
                     if (inspect.isclass(obj) and 
                         issubclass(obj, Command) and 
-                        obj != Command):
+                        obj != Command and
+                        inspect.getmodule(obj) == module):  # Check if class is defined in this module
                         
                         # Convert class name to command name
                         # Remove 'Command' suffix if present and convert to lowercase
