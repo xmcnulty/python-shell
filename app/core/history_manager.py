@@ -11,7 +11,7 @@ class HistoryManager:
     def __init__(self, max_size: int = DEFAULT_MAX_SIZE):
         self.max_size = max_size
         self.history: List[HistoryLineItem] = []
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
 
     def add(self, command: str) -> None:
         with self.lock:
@@ -25,5 +25,15 @@ class HistoryManager:
                 return list(self.history)
             else:
                 return list(self.history[-n:])
+            
+    def read_from_file(self, filepath: str) -> None:
+        with self.lock:
+            try:
+                with open(filepath, 'r') as f:
+                    lines = f.readlines()
+                    for line in lines:
+                        self.add(line.strip())
+            except FileNotFoundError:
+                pass  # If the file doesn't exist, we start with an empty history
         
 app_history = HistoryManager()

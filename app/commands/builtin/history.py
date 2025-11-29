@@ -1,23 +1,32 @@
 from app.commands.command import Command
-from app.core.history_manager import app_history
-from typing import List
+from app.core.history_manager import app_history, HistoryLineItem
+from typing import List, Optional
 
 class History(Command):
     def execute(self, args: List[str]) -> int:
         try:
-            # Implement history command logic here
-            # For now, just write a placeholder message
+            output: Optional[str] = None
             if args:
-                n = int(args[0])
-                hist = app_history.get_last(n)
+                match args[0]:
+                    case "-r":
+                        app_history.read_from_file(args[1])
+                    case str() as s if s.isdigit():
+                        output = self._format_output(app_history.get_last(int(s)))
+                    case _:
+                        output = self._format_output(app_history.get_last())
             else:
-                hist = app_history.get_last()
+                output = self._format_output(app_history.get_last())
 
-            output = ""
-            for idx, cmd in hist:
-                output += f"    {idx}  {cmd}\n"
-            self._stdout.write(output)
+            if output:
+                self._stdout.write(output)
+
             return 0
         except Exception as e:
             self._stderr.write(f"An unexpected error occured:\n{e}\n")
             return -1
+    
+    def _format_output(self, history_items: List[HistoryLineItem]) -> str:
+        output = ""
+        for item in history_items:
+            output += f"    {item.index}  {item.command}\n"
+        return output
