@@ -12,6 +12,7 @@ class HistoryManager:
         self.max_size = max_size
         self.history: List[HistoryLineItem] = []
         self.lock = threading.RLock()
+        self._last_appended_index = 0
 
     def add(self, command: str) -> None:
         with self.lock:
@@ -44,5 +45,15 @@ class HistoryManager:
                         f.write(f"{item.command}\n")
             except Exception:
                 pass  # Ignore any exceptions during writing
+
+    def append_to_file(self, filepath: str) -> None:
+        with self.lock:
+            try:
+                with open(filepath, 'a') as f:
+                    for item in self.history[self._last_appended_index:]:
+                        f.write(f"{item.command}\n")
+                    self._last_appended_index = len(self.history)
+            except Exception:
+                pass  # Ignore any exceptions during appending
         
 app_history = HistoryManager()
