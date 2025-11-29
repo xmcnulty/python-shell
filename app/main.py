@@ -1,10 +1,10 @@
-import sys
 import readline
 from app.core.command_line_parser import CommandLineParser
 from app.commands.command_factory import CommandFactory
 from app.core.execution_handler import ExecutionHandler
 from app.core.completion_handler import CompletionHandler
 from app.exceptions.command_exceptions import ExitException
+from app.core.history_manager import app_history
 
 def main():
     factory = CommandFactory().create_with_builtins()
@@ -34,6 +34,7 @@ def main():
         if not cmdline:
             continue
 
+        app_history.add(cmdline)
         parsed_input = parser.parse_input(cmdline)
 
         if not parsed_input:
