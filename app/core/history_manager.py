@@ -1,6 +1,7 @@
 from typing import List, Tuple
 from collections import namedtuple
 import threading
+import os
 
 DEFAULT_MAX_SIZE = 100
 
@@ -13,6 +14,11 @@ class HistoryManager:
         self.history: List[HistoryLineItem] = []
         self.lock = threading.RLock()
         self._last_appended_index = 0
+
+        hist_file = os.getenv("HISTFILE")
+
+        if hist_file:
+            self.read_from_file(hist_file)
 
     def add(self, command: str) -> None:
         with self.lock:
