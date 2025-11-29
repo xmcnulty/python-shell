@@ -19,6 +19,7 @@ class HistoryManager:
 
         if self._hist_file_path:
             self.read_from_file(self._hist_file_path)
+            self._lines_read_from_hist = len(self.history)
 
     def add(self, command: str) -> None:
         with self.lock:
@@ -64,6 +65,13 @@ class HistoryManager:
 
     def write_on_exit(self):
         if self._hist_file_path:
-            self.append_to_file(self._hist_file_path)
+            with self.lock:
+                try:
+                    with open(self._hist_file_path, 'a') as f:
+                        for item in self.history[self._lines_read_from_hist:]:
+                            f.write(f"{item.command}\n")
+                except Exception:
+                    pass 
+            
         
 app_history = HistoryManager()
