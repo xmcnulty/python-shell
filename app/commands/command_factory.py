@@ -1,5 +1,6 @@
 from app.commands.command import Command
 from app.commands.external_cmd import ExternalCmd
+from app.core.output_handler import OutputHandler
 import os
 import importlib
 import inspect
@@ -36,13 +37,13 @@ class CommandFactory:
     def register(self, name: str, command_cls: Type[Command]):
         self._registry[name] = command_cls
 
-    def create(self, name: str) -> Command:
+    def create(self, name: str, stdout: OutputHandler, stderr: OutputHandler) -> Command:
         command_cls = self._registry.get(name)
 
         if command_cls:
-            return command_cls()
+            return command_cls(stdout=stdout, stderr=stderr)
         else:
-            return ExternalCmd(cmd=name)
+            return ExternalCmd(cmd=name, stdout=stdout, stderr=stderr)
         
     @property
     def commands(self):

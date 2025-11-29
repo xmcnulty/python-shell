@@ -36,11 +36,8 @@ def main():
 
         parsed_input = parser.parse_input(cmdline)
 
-        if not parsed_input.command:
+        if not parsed_input:
             return
-        
-        if parsed_input.command == "exit":
-            return int(parsed_input.args[0]) if parsed_input.args else 0
 
         try:
             executor.execute_parsed_command(parsed_input)

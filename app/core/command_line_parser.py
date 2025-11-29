@@ -7,22 +7,40 @@ import shlex
 
 class CommandLineParser:
 
-    def parse_input(self, input) -> ParsedCommand:
-        split_commands = shlex.split(input)
+    def parse_input(self, input) -> List[ParsedCommand]:
+        parsed_commands = []
+        split_commands = self._split_by_pipe(shlex.split(input))
 
-        cmd = split_commands[0] if split_commands else ""
+        for cmd in split_commands:
+            # TODO: Exception and error handling
+            command = cmd[0] if cmd else ""
 
-        if len(split_commands) > 1:
-            stdout, stderr, args = self._parse_redirects(split_commands[1:])
-        else:
-            stdout, stderr, args = None, None, []
+            if len(cmd) > 1:
+                stdout, stderr, args = self._parse_redirects(cmd[1:])
+            else:
+                stdout, stderr, args = None, None, []
 
-        result = ParsedCommand(
-            command=cmd,
-            args=args,
-            stdout=stdout,
-            stderr=stderr
-        )
+            parsed_cmd = ParsedCommand(command=command, args=args, stdout=stdout, stderr=stderr)
+
+            parsed_commands.append(parsed_cmd)
+
+        return parsed_commands
+    
+    def _split_by_pipe(self, words: List[str]) -> List[List[str]]:
+        token = "|"
+        result = []
+        current = []
+
+        for word in words:
+            if word == token:
+                if current:
+                    result.append(current)
+                    current = []
+            else:
+                current.append(word)
+            
+        if current:
+            result.append(current)
 
         return result
     

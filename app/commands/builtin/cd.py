@@ -2,10 +2,9 @@ from typing import List
 from pathlib import Path
 import os
 from app.commands.command import Command
-from app.core.model.execution_result import ExecutionResult
 
 class CD(Command):
-    def execute(self, args: List[str]) -> ExecutionResult:
+    def execute(self, args: List[str]) -> int:
         path = None
 
         if args:
@@ -14,12 +13,16 @@ class CD(Command):
         if path:
             try:
                 os.chdir(path)
-                return ExecutionResult()
+                return 0
             except FileNotFoundError:
-                return ExecutionResult(code=-1, stderr=f"cd: {path}: No such file or directory")
+                self._stderr.write(f"cd: {path}: No such file or directory\n")
+                return -1
             except NotADirectoryError:
-                return ExecutionResult(code=-1, stderr=f"cd: {path}: No such file or directory")
+                self._stderr.write(f"cd: {path}: No such file or directory\n")
+                return -1
             except PermissionError:
-                return ExecutionResult(code=-1, stderr=f"cd: {path}: Permission denied")
+                self._stderr.write(f"cd: {path}: Permission denied\n")
+                return -1
         else:
-            return ExecutionResult(code=-1, stderr=f"cd: {path}: No such file or directory")
+            self._stderr.write(f"cd: {path}: No such file or directory\n")
+            return -1

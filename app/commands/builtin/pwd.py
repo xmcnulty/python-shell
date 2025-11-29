@@ -1,11 +1,13 @@
 from typing import List
 import os
 from app.commands.command import Command
-from app.core.model.execution_result import ExecutionResult
 
 class PWD(Command):
-    def execute(self, args: List[str]) -> ExecutionResult:
+    def execute(self, args: List[str]) -> int:
         try:
-            return ExecutionResult(stdout=os.getcwd())
+            # pwd should print trailing newline
+            self._stdout.write(os.getcwd() + "\n")
+            return 0
         except Exception as e:
-            return ExecutionResult(code=-5, stderr=f"An unexpected error occured:\n{e}")
+            self._stderr.write(f"An unexpected error occured:\n{e}\n")
+            return -1

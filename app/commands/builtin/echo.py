@@ -1,10 +1,13 @@
 from typing import List
 from app.commands.command import Command
-from app.core.model.execution_result import ExecutionResult
 
 class Echo(Command):
-    def execute(self, args: List[str]) -> ExecutionResult:
+    def execute(self, args: List[str]) -> int:
         try:
-            return ExecutionResult(stdout=' '.join(args))
+            # echo should print a trailing newline like POSIX echo
+            out = ' '.join(args) + "\n"
+            self._stdout.write(out)
+            return 0
         except Exception as e:
-            return ExecutionResult(code=-5, stderr=f"an unexpeced error occured:\n{e}")
+            self._stderr.write(f"an unexpected error occured:\n{e}\n")
+            return -1

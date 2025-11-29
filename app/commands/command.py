@@ -1,9 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import List
 from app.core.output_handler import OutputHandler
-from app.core.model.execution_result import ExecutionResult
 
 class Command(ABC):
+    def __init__(self, stdout: OutputHandler, stderr: OutputHandler) -> None:
+        self._stdout = stdout
+        self._stderr = stderr
+        
+        super().__init__()
+
     @abstractmethod
-    def execute(self, args: List[str]) -> ExecutionResult:
+    def execute(self, args: List[str]) -> int:
         pass

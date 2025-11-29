@@ -15,15 +15,14 @@ class OutputHandler:
 
     def write(self, output: str):
         if self._file:
-            if self._append == "a":
-                self._file.seek(0, 2)  # Move to end of file
-                if self._file.tell() > 0:
-                    self._file.write("\n")
-                    
+            # Write output exactly as provided. Do not inject additional newlines;
+            # callers (builtins or external command wrapper) should include
+            # trailing newlines where appropriate.
             self._file.write(output)
             self._file.flush()
         else:
-            print(output)
+            # When not redirecting to a file, print to stdout as usual.
+            print(output, end="")
 
     def close(self):
         if self._file:

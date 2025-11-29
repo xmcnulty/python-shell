@@ -1,15 +1,15 @@
 from typing import List
 from app.commands.command import Command
-from app.core.model.execution_result import ExecutionResult
 from app.utils.path_utils import find_executable_path
+from app.core.output_handler import OutputHandler
 import subprocess
 
 class ExternalCmd(Command):
-    def __init__(self, cmd: str) -> None:
+    def __init__(self, cmd: str, stdout: OutputHandler, stderr: OutputHandler) -> None:
          self.cmd = cmd
-         super().__init__()
+         super().__init__(stdout, stderr)
 
-    def execute(self, args: List[str]) -> ExecutionResult:
+    def execute(self, args: List[str]) -> int:
             # check if command is an executable in PATH
             exec_path = find_executable_path(self.cmd)
 
@@ -20,14 +20,14 @@ class ExternalCmd(Command):
                     capture_output=True,
                     text=True
                 )
-        
-                stdout_text = result.stdout.rstrip("\n") if result.stdout else ""
-                stderr_text = result.stderr.rstrip("\n") if result.stderr else ""
+                # Preserve stdout/stderr exactly as produced by the subprocess
+                stdout_text = result.stdout if result.stdout else ""
+                stderr_text = result.stderr if result.stderr else ""
 
-                return ExecutionResult(
-                     code=result.returncode,
-                     stdout=stdout_text,
-                     stderr=stderr_text
-                )
+                self._stdout.write(stdout_text)
+                self._stderr.write(stderr_text)
+
+                return result.returncode if result.returncode != 0 else 0
             else:
-                 return ExecutionResult(code=-1, stderr=f"{self.cmd}: command not found")
+                 self._stderr.write(f"{self.cmd}: command not found\n")
+                 return -1
