@@ -15,10 +15,10 @@ class HistoryManager:
         self.lock = threading.RLock()
         self._last_appended_index = 0
 
-        hist_file = os.getenv("HISTFILE")
+        self._hist_file_path = os.getenv("HISTFILE")
 
-        if hist_file:
-            self.read_from_file(hist_file)
+        if self._hist_file_path:
+            self.read_from_file(self._hist_file_path)
 
     def add(self, command: str) -> None:
         with self.lock:
@@ -61,5 +61,9 @@ class HistoryManager:
                     self._last_appended_index = len(self.history)
             except Exception:
                 pass  # Ignore any exceptions during appending
+
+    def write_on_exit(self):
+        if self._hist_file_path:
+            self.append_to_file(self._hist_file_path)
         
 app_history = HistoryManager()
