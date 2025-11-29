@@ -10,6 +10,8 @@ class History(Command):
                 match args[0]:
                     case "-r":
                         app_history.read_from_file(args[1])
+                    case "-w":
+                        app_history.write_to_file(args[1])
                     case str() as s if s.isdigit():
                         output = self._format_output(app_history.get_last(int(s)))
                     case _:

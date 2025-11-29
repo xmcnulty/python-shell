@@ -35,5 +35,14 @@ class HistoryManager:
                         self.add(line.strip())
             except FileNotFoundError:
                 pass  # If the file doesn't exist, we start with an empty history
+
+    def write_to_file(self, filepath: str) -> None:
+        with self.lock:
+            try:
+                with open(filepath, 'w') as f:
+                    for item in self.history:
+                        f.write(f"{item.command}\n")
+            except Exception:
+                pass  # Ignore any exceptions during writing
         
 app_history = HistoryManager()
